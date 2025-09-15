@@ -15,6 +15,7 @@ app.post("/", (req, res) => {
     id: taskid++,
     title,
     description: description || "",
+    isCompleted: false,
     createdAt: new Date().toISOString(),
   };
 
@@ -27,7 +28,7 @@ app.get("/", (req, res) => {
 });
 
 app.put("/", (req, res) => { 
-  const { id, title, description } = req.body;
+  const { id, title, description, isCompleted } = req.body;
 
   if (!id) {
     return res.status(400).json({ error: "ID required" });
@@ -40,6 +41,7 @@ app.put("/", (req, res) => {
 
   if (title !== undefined) task.title = title;
   if (description !== undefined) task.description = description;
+  if (isCompleted !== undefined) task.isCompleted = isCompleted;
 
   res.json(task);
 });
