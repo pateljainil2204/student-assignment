@@ -2,7 +2,7 @@ import express from 'express';
 const app = express();
 app.use(express.json());
 
-const tasks = [];
+let tasks = [];
 let taskid = 1;
 
 app.post("/", (req, res) => {
@@ -26,9 +26,12 @@ app.get("/", (req, res) => {
   res.json(tasks);
 });
 
-app.put("/:id", (req, res) => { 
-  const { id } = req.params;
-  const { title, description } = req.body;
+app.put("/", (req, res) => { 
+  const { id, title, description } = req.body;
+
+  if (!id) {
+    return res.status(400).json({ error: "ID required" });
+  }
 
   const task = tasks.find((t) => t.id === parseInt(id));
   if (!task) {
@@ -40,6 +43,23 @@ app.put("/:id", (req, res) => {
 
   res.json(task);
 });
+
+app.delete("/", (req, res) => {
+  const { id } = req.body;
+
+  if (!id) {
+    return res.status(400).json({ error: "ID required" });
+  }
+
+  const task = tasks.findIndex((t) => t.id === parseInt(id));
+  if (task === 0) {
+    return res.status(404).json({ error: "Task not found" });
+  }
+
+  const deletedTask = tasks.splice(task, 1);
+  res.json({ message: "Task deleted", task: deletedTask });
+});
+
 
 app.listen(3000, () => {
   console.log("server is running on port 3000");
