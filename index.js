@@ -8,7 +8,11 @@ app.set("view engine", "ejs");
 let tasks = [];
 let taskid = 1;
 
-app.post("/", (req, res) => {
+app.get("/", (req,res) => {
+  res.redirect("/register");
+})
+
+app.post("/task", (req, res) => {
   const { title, description } = req.body;
   if (!title || title.trim() === "") {
     return res.status(400).json({ error: "Enter the title" });
@@ -26,11 +30,11 @@ app.post("/", (req, res) => {
   res.status(200).json(newTask);
 });
 
-app.get("/", (req, res) => {
+app.get("/task", (req, res) => {
   res.json(tasks);
 });
 
-app.put("/", (req, res) => { 
+app.put("/task", (req, res) => { 
   const { id, title, description, isCompleted } = req.body;
 
   if (!id) {
@@ -49,7 +53,7 @@ app.put("/", (req, res) => {
   res.json(task);
 });
 
-app.delete("/", (req, res) => {
+app.delete("/task", (req, res) => {
   const { id } = req.body;
 
   if (!id) {
@@ -74,7 +78,7 @@ app.post("/login", (req, res) => {
 
     const user = users.find(u => u.username === username && u.password === password);
   if (user) {
-    return res.send("<h2>Login successful! " + username);
+    return res.redirect("/task");
   } else {
     return res.send("<h2>Invalid username or password</h2>");
   }
@@ -98,9 +102,6 @@ app.post("/register", (req, res) => {
   users.push({ username, password });
   res.send("<h2> Registration successful! <a href='/login'>Login here</a></h2>");
 });
-
-
-
 
 app.listen(3000, () => {
   console.log("server is running on port 3000");
