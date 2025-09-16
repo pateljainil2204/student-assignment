@@ -1,6 +1,9 @@
-import express from 'express';
+import express from "express";
 const app = express();
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.set("view engine", "ejs"); 
+
 
 let tasks = [];
 let taskid = 1;
@@ -61,6 +64,42 @@ app.delete("/", (req, res) => {
   const deletedTask = tasks.splice(task, 1);
   res.json({ message: "Task deleted", task: deletedTask });
 });
+
+app.get("/login", (req, res) => {
+  res.render("login");
+});
+
+app.post("/login", (req, res) => {
+  const { username, password } = req.body;
+
+    const user = users.find(u => u.username === username && u.password === password);
+  if (user) {
+    return res.send("<h2>Login successful! " + username);
+  } else {
+    return res.send("<h2>Invalid username or password</h2>");
+  }
+});
+
+
+let users = []
+
+app.get("/register", (req, res) => {
+  res.render("register");
+});
+
+app.post("/register", (req, res) => {
+  const { username, password } = req.body;
+
+ const existingUser = users.find(u => u.username === username);
+  if (existingUser) {
+    return res.send("<h2> Username already exists. Try another.</h2>");
+  }
+
+  users.push({ username, password });
+  res.send("<h2> Registration successful! <a href='/login'>Login here</a></h2>");
+});
+
+
 
 
 app.listen(3000, () => {
