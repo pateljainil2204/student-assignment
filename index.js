@@ -10,11 +10,27 @@ app.use(express.static('public'));
 let tasks = [];
 let taskid = 1;
 
-app.get("/", (req,res) => {
-  res.redirect("/register");
-})
+function authentication(req, res, next) {
+  const authHeader = req.headers["authorization"];
+  const key = authHeader && authHeader.split('Bearer ')[1];
+  
+  if(!key) {
+    return res.status(401).json({ error: "token required" });
+  }
+  jwt.verify(key, "aaa", (err, user) => {
+    if(err) 
+      return res.status(403).json({ error: "invalid or expire token" });
+    req.user = user;
+    next();
+  });
+}
 
-app.post("/task", (req, res) => {
+
+app.get("/", (req, res) => {
+  res.redirect("/register");
+});
+
+app.post("/task", authentication, (req, res) => {
   const { title, description } = req.body;
   if (!title || title.trim() === "") {
     return res.status(400).json({ error: "Enter the title" });
@@ -36,7 +52,7 @@ app.get("/task", (req, res) => {
   res.json(tasks);
 });
 
-app.put("/task", (req, res) => { 
+app.put("/task", authentication, (req, res) => {
   const { id, title, description, isCompleted } = req.body;
 
   if (!id) {
@@ -55,7 +71,7 @@ app.put("/task", (req, res) => {
   res.json(task);
 });
 
-app.delete("/task", (req, res) => {
+app.delete("/task", authentication, (req, res) => {
   const { id } = req.body;
 
   if (!id) {
@@ -77,21 +93,22 @@ app.get("/login", (req, res) => {
 
 app.post("/login", (req, res) => {
   const { username, password } = req.body;
-
   const user = users.find(u => u.username === username && u.password === password);
   if (user) {
-    let rtn = { username: user.username };
-    let token = jwt.sign(rtn, "aaa", { expiresIn: "1h" });
-
- if (req.is("application/json")) {
+    const payload = { username: user.username };
+    const token = jwt.sign(payload, "aaa", { expiresIn: "1h" });
+    if (req.is("application/json")) {
       return res.json({ message: "Login successful", token });
     }
-
- return res.render("login", { message: "Login successful" });
+    return res.render("login", { message: "Login successful" });
   } else {
+    if (req.is("application/json")) {
+      return res.status(401).json({ error: "Invalid username or password" });
+    }
     return res.render("login", { message: "Invalid username or password" });
   }
 });
+
 
 let users = []
 
@@ -101,15 +118,15 @@ app.get("/register", (req, res) => {
 
 app.post("/register", (req, res) => {
   const { username, password } = req.body;
-
   const existingUser = users.find(u => u.username === username);
-  if (existingUser) {
-    return res.render("register", { message: "Username already exists. Try another." });
-  }
 
+  if (existingUser) {
+    return res.status(400).json({ error: "Username already exists. Try another." });
+  }
   users.push({ username, password });
-  res.render("register", { message: "Registration successful!" });
+  return res.status(201).json({ message: "Registration successful!" });
 });
+
 
 
 app.listen(3000, () => {
