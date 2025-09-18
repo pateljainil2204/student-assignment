@@ -1,3 +1,4 @@
+import jwt from "jsonwebtoken";
 import express from "express";
 const app = express();
 app.use(express.json());
@@ -79,6 +80,13 @@ app.post("/login", (req, res) => {
 
     const user = users.find(u => u.username === username && u.password === password);
   if (user) {
+    let rtn = { username: user.username };
+    let token = jwt.sign(rtn, "aaa", { expiresIn: "1h" });
+
+    if (req.is("application/json")) {
+      return res.json({ message: "Login successful", token });
+    }
+
     return res.redirect("/task");
   } else {
     return res.send("<h2>Invalid username or password</h2>");
