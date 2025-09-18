@@ -103,14 +103,15 @@ app.get("/register", (req, res) => {
 app.post("/register", (req, res) => {
   const { username, password } = req.body;
 
- const existingUser = users.find(u => u.username === username);
+  const existingUser = users.find(u => u.username === username);
   if (existingUser) {
-    return res.send("<h2> Username already exists. Try another.</h2>");
+    return res.render("register", { message: "Username already exists. Try another." });
   }
 
   users.push({ username, password });
-  res.send("<h2> Registration successful! <a href='/login'>Login here</a></h2>");
+  res.render("register", { message: "Registration successful!" });
 });
+
 
 app.listen(3000, () => {
   console.log("server is running on port 3000");

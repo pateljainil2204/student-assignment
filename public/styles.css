@@ -1,33 +1,3 @@
-/* Popup styles */
-.popup {
-  position: fixed;
-  top: 30px;
-  left: 50%;
-  transform: translateX(-50%);
-  min-width: 260px;
-  max-width: 90vw;
-  padding: 18px 32px;
-  border-radius: 8px;
-  background: #23272f;
-  color: #fff;
-  font-size: 1.1rem;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.25);
-  z-index: 9999;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s, top 0.3s;
-}
-.popup.show {
-  opacity: 1;
-  pointer-events: auto;
-  top: 60px;
-}
-.popup.success {
-  background: linear-gradient(90deg, #28a745, #218838);
-}
-.popup.error {
-  background: linear-gradient(90deg, #dc3545, #b52a37);
-}
 body {
   font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   background: #121212;
@@ -102,36 +72,48 @@ button:hover, input[type="submit"]:hover {
   color: #56aaff;
   text-decoration: underline;
 }
-/* Base popup style (second version, more centralized) */
+
 .popup {
-  display: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  padding: 20px 40px;
-  border-radius: 10px;
-  font-weight: bold;
-  font-size: 20px;
-  text-align: center;
-  color: white;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
   z-index: 1000;
-  max-width: 80%;
-  word-wrap: break-word;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background: rgba(18,18,18,0.7);
+  transition: background 0.3s;
 }
-.popup.success {
-  background-color: #28a745;
+
+.popup-content {
+  background: linear-gradient(135deg, #232526 0%, #414345 100%);
+  color: #fff;
+  margin: 0 auto;
+  padding: 28px 30px;
+  width: 320px;
+  border-radius: 14px;
+  text-align: center;
+  font-size: 18px;
+  box-shadow: 0px 8px 32px rgba(0,0,0,0.45), 0 1.5px 6px 0 rgba(0,0,0,0.18);
+  border-left: 6px solid #007bff;
+  font-weight: 500;
+  letter-spacing: 0.01em;
 }
-.popup.error {
-  background-color: #dc3545;
+
+.popup.success .popup-content {
+  border-left: 6px solid #4ade80;
+  background: linear-gradient(135deg, #232526 0%, #2d774a 100%);
 }
-.popup.show {
-  animation: fadePopup 2s forwards;
+
+.popup.error .popup-content {
+  border-left: 6px solid #ef4444;
+  background: linear-gradient(135deg, #232526 0%, #6b2323 100%);
 }
-@keyframes fadePopup {
-  0% { opacity: 0; transform: translate(-50%, -60%); }
-  10% { opacity: 1; transform: translate(-50%, -50%); }
-  90% { opacity: 1; transform: translate(-50%, -50%); }
-  100% { opacity: 0; transform: translate(-50%, -60%); }
+
+@media (max-width: 600px) {
+  .popup-content {
+    width: 90vw;
+    padding: 18px 8vw;
+    font-size: 16px;
+  }
 }

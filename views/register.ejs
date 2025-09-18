@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Register Page</title>
-    <link rel="stylesheet" href="/styles.css">
+  <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
   <div class="form-container">
@@ -16,5 +16,26 @@
     </form>
     <a href="/login" class="form-link">Already have an account? Login</a>
   </div>
+
+  <!-- Popup -->
+  <% if (typeof message !== "undefined") { %>
+  <div id="popup" class="popup">
+    <div class="popup-content">
+      <p><%= message %></p>
+    </div>
+  </div>
+  <% } %>
+
+  <script>
+   const popup = document.getElementById("popup");
+  if (popup) {
+    setTimeout(() => {
+      popup.style.display = "none";
+      if (popup.innerText.includes("Registration successful!")) {
+        window.location.href = "/login";
+      }
+    }, 2000);
+  }
+  </script>
 </body>
 </html>
