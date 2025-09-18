@@ -16,5 +16,26 @@
     </form>
     <a href="/register" class="form-link">Don't have an account? Register</a>
   </div>
+
+  <!-- Popup -->
+  <% if (typeof message !== "undefined") { %>
+  <div id="popup" class="popup">
+    <div class="popup-content">
+      <p><%= message %></p>
+    </div>
+  </div>
+  <% } %>
+
+  <script>
+    const popup = document.getElementById("popup");
+    if (popup) {
+      setTimeout(() => {
+        popup.style.display = "none";
+        if (popup.innerText.includes("Login successful")) {
+          window.location.href = "/task";
+        }
+      }, 2000);
+    }
+  </script>
 </body>
 </html>

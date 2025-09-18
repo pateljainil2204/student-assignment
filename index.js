@@ -78,21 +78,20 @@ app.get("/login", (req, res) => {
 app.post("/login", (req, res) => {
   const { username, password } = req.body;
 
-    const user = users.find(u => u.username === username && u.password === password);
+  const user = users.find(u => u.username === username && u.password === password);
   if (user) {
     let rtn = { username: user.username };
     let token = jwt.sign(rtn, "aaa", { expiresIn: "1h" });
 
-    if (req.is("application/json")) {
+ if (req.is("application/json")) {
       return res.json({ message: "Login successful", token });
     }
 
-    return res.redirect("/task");
+ return res.render("login", { message: "Login successful" });
   } else {
-    return res.send("<h2>Invalid username or password</h2>");
+    return res.render("login", { message: "Invalid username or password" });
   }
 });
-
 
 let users = []
 
